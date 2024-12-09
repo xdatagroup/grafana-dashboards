@@ -2257,7 +2257,7 @@
                     "type": "prometheus",
                     "uid": "P4169E866C3094E38"
                 },
-                "definition": "label_values(nginx_ingress_controller_config_hash{cluster=~\"$cluster\"}, controller_class) ",
+                "definition": "label_values(nginx_ingress_controller_config_hash, controller_class) ",
                 "hide": 0,
                 "includeAll": true,
                 "label": "Controller Class",
@@ -2292,7 +2292,7 @@
                     "type": "prometheus",
                     "uid": "P4169E866C3094E38"
                 },
-                "definition": "label_values(nginx_ingress_controller_requests{cluster=~\"$cluster\"}, controller_class=~\"$controller_class\"},namespace)",
+                "definition": "label_values(nginx_ingress_controller_requests, controller_class=~\"$controller_class\"},namespace)",
                 "hide": 0,
                 "includeAll": true,
                 "label": "Namespace",
@@ -2300,7 +2300,7 @@
                 "name": "namespace",
                 "options": [],
                 "query": {
-                    "query": "label_values(nginx_ingress_controller_requests{cluster=~\"$cluster\"}, controller_class=~\"$controller_class\"},namespace)",
+                    "query": "label_values(nginx_ingress_controller_requests, controller_class=~\"$controller_class\"},namespace)",
                     "refId": "prometheus-namespace-Variable-Query"
                 },
                 "refresh": 1,
