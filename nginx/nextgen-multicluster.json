@@ -2380,8 +2380,8 @@
         ]
     },
     "timezone": "",
-    "title": "Kubernetes Nginx Ingress Prometheus NextGen",
-    "uid": "k8s-nginx-ingress-prometheus-ng",
+    "title": "Nginx Ingress NextGen Multicluster",
+    "uid": "nginx-ingress-nextgen-multicluster",
     "version": 1,
     "weekStart": ""
 }
