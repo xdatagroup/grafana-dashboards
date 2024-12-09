@@ -2229,7 +2229,7 @@
                 "hide": 0,
                 "includeAll": true,
                 "label": "Cluster",
-                "multi": true,
+                "multi": false,
                 "name": "cluster",
                 "options": [],
                 "query": {
