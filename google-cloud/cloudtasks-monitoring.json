@@ -25,22 +25,6 @@
   "links": [],
   "panels": [
     {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
-      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
-      "id": 0,
-      "options": {
-        "mode": "markdown",
-        "content": "This dashboard has 6 charts for the related [Cloud Storage metrics](https://cloud.google.com/monitoring/api/metrics_gcp#gcp-storage), including `Total object count`, `Total bytes`, `Bucket object count`, `Bucket total bytes`, `Bucket - Received/Sent Bytes`, and `Bucket - Request count`."
-      },
-      "pluginVersion": "7.4.0-pre",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Cloud Storage Monitoring",
-      "type": "text"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -81,7 +65,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total object count",
+      "title": "Cloud Tasks Queue - API requests",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -97,12 +81,11 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloud_tasks_queue"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "cloudtasks.googleapis.com/api/request_count",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -151,7 +134,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total bytes",
+      "title": "Queue depth",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -167,15 +150,14 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
             "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "cloud_tasks_queue"],
             "groupBys": [],
             "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricType": "cloudtasks.googleapis.com/queue/depth",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
+            "unit": "1",
+            "valueType": "INT64"
           }
         }
       ]
@@ -221,7 +203,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket object count",
+      "title": "Task attempt count",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -237,11 +219,11 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloud_tasks_queue"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "cloudtasks.googleapis.com/queue/task_attempt_count",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -290,7 +272,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket total bytes",
+      "title": "Task attempt delays",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -306,175 +288,21 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
-            "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
-          }
-        }
-      ]
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$datasource",
-      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
-      "hiddenSeries": false,
-      "id": 5,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false,
-        "sideWidth": 220
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": { "alertThreshold": true },
-      "percentage": false,
-      "pluginVersion": "7.4.0-pre",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Bucket - Received bytes, Sent bytes",
-      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
-      "type": "graph",
-      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
-      "yaxes": [
-        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
-        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
-      ],
-      "yaxis": { "align": false, "alignLevel": null },
-      "targets": [
-        {
-          "queryType": "metrics",
-          "refId": "A",
-          "metricQuery": {
-            "aliasBy": "",
-            "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_PERCENTILE_99",
+            "filters": ["resource.type", "=", "cloud_tasks_queue"],
             "groupBys": [],
             "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/received_bytes_count",
+            "metricType": "cloudtasks.googleapis.com/queue/task_attempt_delays",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "INT64"
-          }
-        },
-        {
-          "queryType": "metrics",
-          "refId": "B",
-          "metricQuery": {
-            "aliasBy": "",
-            "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/sent_bytes_count",
-            "projectName": "$project",
-            "unit": "By",
-            "valueType": "INT64"
-          }
-        }
-      ]
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$datasource",
-      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
-      "hiddenSeries": false,
-      "id": 6,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false,
-        "sideWidth": 220
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": { "alertThreshold": true },
-      "percentage": false,
-      "pluginVersion": "7.4.0-pre",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Bucket - Request count",
-      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
-      "type": "graph",
-      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
-      "yaxes": [
-        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
-        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
-      ],
-      "yaxis": { "align": false, "alignLevel": null },
-      "targets": [
-        {
-          "queryType": "metrics",
-          "refId": "A",
-          "metricQuery": {
-            "aliasBy": "",
-            "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/api/request_count",
-            "projectName": "$project",
-            "unit": "1",
-            "valueType": "INT64"
+            "unit": "ms",
+            "valueType": "DISTRIBUTION"
           }
         }
       ]
     }
   ],
   "schemaVersion": 26,
-  "tags": ["Storage", "Cloud Monitoring", "GCP"],
+  "tags": ["Tools", "Cloud Monitoring", "GCP"],
   "templating": {
     "list": [
       {
@@ -586,7 +414,7 @@
   "time": { "from": "now-24h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Cloud Storage Monitoring",
+  "title": "Cloud Tasks Monitoring",
   "uid": "",
   "version": 5
 }

@@ -32,12 +32,12 @@
       "id": 0,
       "options": {
         "mode": "markdown",
-        "content": "This dashboard has 6 charts for the related [Cloud Storage metrics](https://cloud.google.com/monitoring/api/metrics_gcp#gcp-storage), including `Total object count`, `Total bytes`, `Bucket object count`, `Bucket total bytes`, `Bucket - Received/Sent Bytes`, and `Bucket - Request count`."
+        "content": "This dashboard has 10 charts for the related [GCE VM metrics](https://cloud.google.com/monitoring/api/metrics_gcp#gcp-compute), including metrics for CPU, disk read/write, and network."
       },
       "pluginVersion": "7.4.0-pre",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Cloud Storage Monitoring",
+      "title": "GCE VM Instance Monitoring",
       "type": "text"
     },
     {
@@ -81,7 +81,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total object count",
+      "title": "GCE VM Instance - CPU Utilization",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -95,17 +95,16 @@
           "queryType": "metrics",
           "refId": "A",
           "metricQuery": {
-            "aliasBy": "",
+            "aliasBy": "{{metric.label.instance_name}}",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
             "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
             "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricType": "compute.googleapis.com/instance/cpu/utilization",
             "projectName": "$project",
-            "unit": "1",
-            "valueType": "INT64"
+            "unit": "10^2.%",
+            "valueType": "DOUBLE"
           }
         }
       ]
@@ -151,7 +150,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total bytes",
+      "title": "GCE VM Instance - Uptime",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -167,14 +166,13 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/uptime",
             "projectName": "$project",
-            "unit": "By",
+            "unit": "s{uptime}",
             "valueType": "DOUBLE"
           }
         }
@@ -221,7 +219,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket object count",
+      "title": "Disk read operations",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -237,11 +235,11 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/disk/read_ops_count",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -290,7 +288,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket total bytes",
+      "title": "Disk write operations",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -306,14 +304,14 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/disk/write_ops_count",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
+            "unit": "1",
+            "valueType": "INT64"
           }
         }
       ]
@@ -359,7 +357,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Received bytes, Sent bytes",
+      "title": "Disk read bytes",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -376,26 +374,10 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
             "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/received_bytes_count",
-            "projectName": "$project",
-            "unit": "By",
-            "valueType": "INT64"
-          }
-        },
-        {
-          "queryType": "metrics",
-          "refId": "B",
-          "metricQuery": {
-            "aliasBy": "",
-            "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/sent_bytes_count",
+            "metricType": "compute.googleapis.com/instance/disk/read_bytes_count",
             "projectName": "$project",
             "unit": "By",
             "valueType": "INT64"
@@ -444,7 +426,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Request count",
+      "title": "Disk write bytes",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -461,12 +443,288 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "gce_instance"],
             "groupBys": [],
             "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/api/request_count",
+            "metricType": "compute.googleapis.com/instance/disk/write_bytes_count",
+            "projectName": "$project",
+            "unit": "By",
+            "valueType": "INT64"
+          }
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "hiddenSeries": false,
+      "id": 7,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false,
+        "sideWidth": 220
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": { "alertThreshold": true },
+      "percentage": false,
+      "pluginVersion": "7.4.0-pre",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GCE VM Instance - Received packets",
+      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
+      "type": "graph",
+      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
+      "yaxes": [
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
+      ],
+      "yaxis": { "align": false, "alignLevel": null },
+      "targets": [
+        {
+          "queryType": "metrics",
+          "refId": "A",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/network/received_packets_count",
             "projectName": "$project",
             "unit": "1",
+            "valueType": "INT64"
+          }
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false,
+        "sideWidth": 220
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": { "alertThreshold": true },
+      "percentage": false,
+      "pluginVersion": "7.4.0-pre",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GCE VM Instance - Sent packets count",
+      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
+      "type": "graph",
+      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
+      "yaxes": [
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
+      ],
+      "yaxis": { "align": false, "alignLevel": null },
+      "targets": [
+        {
+          "queryType": "metrics",
+          "refId": "A",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/nat/sent_packets_count",
+            "projectName": "$project",
+            "unit": "{packet}",
+            "valueType": "INT64"
+          }
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+      "hiddenSeries": false,
+      "id": 9,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false,
+        "sideWidth": 220
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": { "alertThreshold": true },
+      "percentage": false,
+      "pluginVersion": "7.4.0-pre",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GCE VM Instance - Received bytes",
+      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
+      "type": "graph",
+      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
+      "yaxes": [
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
+      ],
+      "yaxis": { "align": false, "alignLevel": null },
+      "targets": [
+        {
+          "queryType": "metrics",
+          "refId": "A",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/network/received_bytes_count",
+            "projectName": "$project",
+            "unit": "By",
+            "valueType": "INT64"
+          }
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false,
+        "sideWidth": 220
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": { "alertThreshold": true },
+      "percentage": false,
+      "pluginVersion": "7.4.0-pre",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GCE VM Instance - Sent bytes",
+      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
+      "type": "graph",
+      "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
+      "yaxes": [
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true },
+        { "format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true }
+      ],
+      "yaxis": { "align": false, "alignLevel": null },
+      "targets": [
+        {
+          "queryType": "metrics",
+          "refId": "A",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "gce_instance"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "compute.googleapis.com/instance/network/sent_bytes_count",
+            "projectName": "$project",
+            "unit": "By",
             "valueType": "INT64"
           }
         }
@@ -474,7 +732,7 @@
     }
   ],
   "schemaVersion": 26,
-  "tags": ["Storage", "Cloud Monitoring", "GCP"],
+  "tags": ["Compute", "Cloud Monitoring", "GCP"],
   "templating": {
     "list": [
       {
@@ -586,7 +844,7 @@
   "time": { "from": "now-24h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Cloud Storage Monitoring",
+  "title": "GCE VM Instance Monitoring",
   "uid": "",
   "version": 5
 }

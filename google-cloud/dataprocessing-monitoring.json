@@ -32,12 +32,12 @@
       "id": 0,
       "options": {
         "mode": "markdown",
-        "content": "This dashboard has 6 charts for the related [Cloud Storage metrics](https://cloud.google.com/monitoring/api/metrics_gcp#gcp-storage), including `Total object count`, `Total bytes`, `Bucket object count`, `Bucket total bytes`, `Bucket - Received/Sent Bytes`, and `Bucket - Request count`."
+        "content": "This dashboard demonstrates 6 different charts in a single dashboard that provides a single view for the data processing pipeline [metrics](https://cloud.google.com/monitoring/api/metrics_gcp). Read the blog post [Use SRE principles to monitor pipelines with Cloud Monitoring dashboards](https://cloud.google.com/blog/products/management-tools/the-right-metrics-to-monitor-cloud-data-pipelines) for additional details."
       },
       "pluginVersion": "7.4.0-pre",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Cloud Storage Monitoring",
+      "title": "Data Processing Monitoring",
       "type": "text"
     },
     {
@@ -81,7 +81,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total object count",
+      "title": "Dataflow (traffic)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -98,11 +98,11 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "crossSeriesReducer": "REDUCE_SUM",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "dataflow_job"],
+            "groupBys": ["resource.label.job_name"],
+            "metricKind": "DELTA",
+            "metricType": "dataflow.googleapis.com/job/elements_produced_count",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -151,7 +151,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total bytes",
+      "title": "Pubsub (traffic)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -168,14 +168,14 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "crossSeriesReducer": "REDUCE_SUM",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "pubsub_topic"],
+            "groupBys": ["metric.label.response_code"],
+            "metricKind": "DELTA",
+            "metricType": "pubsub.googleapis.com/topic/send_request_count",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
+            "unit": "1",
+            "valueType": "INT64"
           }
         }
       ]
@@ -221,7 +221,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket object count",
+      "title": "BigQuery (traffic)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -237,13 +237,13 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "bigquery_dataset"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "bigquery.googleapis.com/storage/uploaded_bytes",
             "projectName": "$project",
-            "unit": "1",
+            "unit": "By",
             "valueType": "INT64"
           }
         }
@@ -290,7 +290,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket total bytes",
+      "title": "System lag (latency)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -307,13 +307,29 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "dataflow_job"],
             "groupBys": [],
             "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricType": "dataflow.googleapis.com/job/system_lag",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
+            "unit": "s",
+            "valueType": "INT64"
+          }
+        },
+        {
+          "queryType": "metrics",
+          "refId": "B",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_MEAN",
+            "filters": ["resource.type", "=", "dataflow_job"],
+            "groupBys": [],
+            "metricKind": "GAUGE",
+            "metricType": "dataflow.googleapis.com/job/data_watermark_age",
+            "projectName": "$project",
+            "unit": "s",
+            "valueType": "INT64"
           }
         }
       ]
@@ -359,7 +375,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Received bytes, Sent bytes",
+      "title": "Dataflow processing volume (throughput)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -375,29 +391,14 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/received_bytes_count",
+            "crossSeriesReducer": "REDUCE_SUM",
+            "perSeriesAligner": "ALIGN_MEAN",
+            "filters": ["resource.type", "=", "dataflow_job"],
+            "groupBys": ["resource.label.job_name"],
+            "metricKind": "GAUGE",
+            "metricType": "dataflow.googleapis.com/job/element_count",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "INT64"
-          }
-        },
-        {
-          "queryType": "metrics",
-          "refId": "B",
-          "metricQuery": {
-            "aliasBy": "",
-            "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
-            "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/sent_bytes_count",
-            "projectName": "$project",
-            "unit": "By",
+            "unit": "1",
             "valueType": "INT64"
           }
         }
@@ -444,7 +445,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Request count",
+      "title": "Pipeline logging (errors)",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -461,10 +462,42 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "bigquery_dataset", "AND", "metric.label.severity", "=", "ERROR"],
             "groupBys": [],
             "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/api/request_count",
+            "metricType": "logging.googleapis.com/log_entry_count",
+            "projectName": "$project",
+            "unit": "1",
+            "valueType": "INT64"
+          }
+        },
+        {
+          "queryType": "metrics",
+          "refId": "B",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "pubsub_topic", "AND", "metric.label.severity", "=", "ERROR"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "logging.googleapis.com/log_entry_count",
+            "projectName": "$project",
+            "unit": "1",
+            "valueType": "INT64"
+          }
+        },
+        {
+          "queryType": "metrics",
+          "refId": "C",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "dataflow_job", "AND", "metric.label.severity", "=", "ERROR"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "logging.googleapis.com/log_entry_count",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -474,7 +507,7 @@
     }
   ],
   "schemaVersion": 26,
-  "tags": ["Storage", "Cloud Monitoring", "GCP"],
+  "tags": ["Bigdata", "Cloud Monitoring", "GCP"],
   "templating": {
     "list": [
       {
@@ -586,7 +619,7 @@
   "time": { "from": "now-24h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Cloud Storage Monitoring",
+  "title": "Data Processing Monitoring",
   "uid": "",
   "version": 5
 }

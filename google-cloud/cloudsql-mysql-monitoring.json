@@ -25,22 +25,6 @@
   "links": [],
   "panels": [
     {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
-      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
-      "id": 0,
-      "options": {
-        "mode": "markdown",
-        "content": "This dashboard has 6 charts for the related [Cloud Storage metrics](https://cloud.google.com/monitoring/api/metrics_gcp#gcp-storage), including `Total object count`, `Total bytes`, `Bucket object count`, `Bucket total bytes`, `Bucket - Received/Sent Bytes`, and `Bucket - Request count`."
-      },
-      "pluginVersion": "7.4.0-pre",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Cloud Storage Monitoring",
-      "type": "text"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -81,7 +65,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total object count",
+      "title": "Cloud SQL Database - Queries",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -97,12 +81,11 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "cloudsql.googleapis.com/database/mysql/queries",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -151,7 +134,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total bytes",
+      "title": "MySQL Connections",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -167,15 +150,14 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "crossSeriesReducer": "REDUCE_SUM",
             "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
             "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricType": "cloudsql.googleapis.com/database/network/connections",
             "projectName": "$project",
-            "unit": "By",
-            "valueType": "DOUBLE"
+            "unit": "1",
+            "valueType": "INT64"
           }
         }
       ]
@@ -221,7 +203,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket object count",
+      "title": "Network bytes received by MySQL",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -237,13 +219,13 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/object_count",
+            "metricKind": "DELTA",
+            "metricType": "cloudsql.googleapis.com/database/mysql/received_bytes_count",
             "projectName": "$project",
-            "unit": "1",
+            "unit": "By",
             "valueType": "INT64"
           }
         }
@@ -290,7 +272,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket total bytes",
+      "title": "Network bytes sent by MySQL",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -306,14 +288,14 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_MEAN",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
-            "metricKind": "GAUGE",
-            "metricType": "storage.googleapis.com/storage/total_bytes",
+            "metricKind": "DELTA",
+            "metricType": "cloudsql.googleapis.com/database/mysql/sent_bytes_count",
             "projectName": "$project",
             "unit": "By",
-            "valueType": "DOUBLE"
+            "valueType": "INT64"
           }
         }
       ]
@@ -359,7 +341,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Received bytes, Sent bytes",
+      "title": "InnoDB dirty pages, InnoDB free pages, InnoDB total pages",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -375,13 +357,13 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_MEAN",
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/received_bytes_count",
+            "metricKind": "GAUGE",
+            "metricType": "cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_dirty",
             "projectName": "$project",
-            "unit": "By",
+            "unit": "1",
             "valueType": "INT64"
           }
         },
@@ -391,13 +373,29 @@
           "metricQuery": {
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
-            "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "perSeriesAligner": "ALIGN_MEAN",
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
-            "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/network/sent_bytes_count",
+            "metricKind": "GAUGE",
+            "metricType": "cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_free",
             "projectName": "$project",
-            "unit": "By",
+            "unit": "1",
+            "valueType": "INT64"
+          }
+        },
+        {
+          "queryType": "metrics",
+          "refId": "C",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_MEAN",
+            "filters": ["resource.type", "=", "cloudsql_database"],
+            "groupBys": [],
+            "metricKind": "GAUGE",
+            "metricType": "cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_total",
+            "projectName": "$project",
+            "unit": "1",
             "valueType": "INT64"
           }
         }
@@ -444,7 +442,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bucket - Request count",
+      "title": "InnoDB pages read, InnoDB pages written",
       "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "graph",
       "xaxis": { "buckets": null, "mode": "time", "name": null, "show": true, "values": [] },
@@ -461,10 +459,26 @@
             "aliasBy": "",
             "alignmentPeriod": "$alignmentPeriod",
             "perSeriesAligner": "ALIGN_RATE",
-            "filters": ["resource.type", "=", "gcs_bucket"],
+            "filters": ["resource.type", "=", "cloudsql_database"],
             "groupBys": [],
             "metricKind": "DELTA",
-            "metricType": "storage.googleapis.com/api/request_count",
+            "metricType": "cloudsql.googleapis.com/database/mysql/innodb_pages_read",
+            "projectName": "$project",
+            "unit": "1",
+            "valueType": "INT64"
+          }
+        },
+        {
+          "queryType": "metrics",
+          "refId": "B",
+          "metricQuery": {
+            "aliasBy": "",
+            "alignmentPeriod": "$alignmentPeriod",
+            "perSeriesAligner": "ALIGN_RATE",
+            "filters": ["resource.type", "=", "cloudsql_database"],
+            "groupBys": [],
+            "metricKind": "DELTA",
+            "metricType": "cloudsql.googleapis.com/database/mysql/innodb_pages_written",
             "projectName": "$project",
             "unit": "1",
             "valueType": "INT64"
@@ -586,7 +600,7 @@
   "time": { "from": "now-24h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Cloud Storage Monitoring",
+  "title": "Cloud SQL(MySQL) Monitoring",
   "uid": "",
   "version": 5
 }
